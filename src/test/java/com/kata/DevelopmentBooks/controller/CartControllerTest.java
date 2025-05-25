@@ -47,7 +47,7 @@ class CartControllerTest {
     @Test
     @DisplayName("returns HTTP 200 when all carts requested")
     void getAllCart_ShouldReturn200() throws Exception {
-        when(cartService.getAllCart()).thenReturn(getCartDtoList());
+        when(cartService.getAllCarts()).thenReturn(getCartDtoList());
         MvcResult response = mockMvc.perform(get("/carts")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

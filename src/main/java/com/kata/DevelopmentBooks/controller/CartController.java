@@ -28,6 +28,6 @@ public class CartController {
 
     @GetMapping(value = {"/", ""})
     public ResponseEntity<List<CartDto>> getCarts() {
-        return ResponseEntity.ok(cartService.getAllCart());
+        return ResponseEntity.ok(cartService.getAllCarts());
     }
 }

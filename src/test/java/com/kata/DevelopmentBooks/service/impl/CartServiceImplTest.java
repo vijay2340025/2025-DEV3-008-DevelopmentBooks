@@ -51,23 +51,27 @@ class CartServiceImplTest {
 
     @Test
     @DisplayName("test get all cart")
-    void testGetAllCart() {
-        Cart cart1 = new Cart();
-        String cartId1 = UUID.randomUUID().toString();
-        cart1.setCartId(cartId1);
+    void testGetAllCarts() {
+        Cart cart1 = createCart();
+        String cartId1 = cart1.getCartId();
 
-        Cart cart2 = new Cart();
-        String cartId2 = UUID.randomUUID().toString();
-        cart2.setCartId(cartId2);
+        Cart cart2 = createCart();
+        String cartId2 = cart2.getCartId();
 
         when(cartRepository.findAll()).thenReturn(List.of(cart1, cart2));
         when(cartMapper.toCartDto(cart1)).thenReturn(new CartDto(cartId1));
         when(cartMapper.toCartDto(cart2)).thenReturn(new CartDto(cartId2));
-        List<CartDto> result = cartService.getAllCart();
+        List<CartDto> result = cartService.getAllCarts();
 
         assertNotNull(result);
         assertEquals(2, result.size());
         assertEquals(cartId1, result.get(0).getCartId());
         assertEquals(cartId2, result.get(1).getCartId());
+    }
+
+    private Cart createCart() {
+        Cart cart = new Cart();
+        cart.setCartId(UUID.randomUUID().toString());
+        return cart;
     }
 }

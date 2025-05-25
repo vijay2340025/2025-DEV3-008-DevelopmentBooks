@@ -29,7 +29,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public List<CartDto> getAllCart() {
+    public List<CartDto> getAllCarts() {
         return cartRepository.findAll()
                 .stream().map(cart -> cartMapper.toCartDto(cart))
                 .toList();
