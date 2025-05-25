@@ -7,6 +7,7 @@ import com.kata.DevelopmentBooks.service.CartService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
@@ -60,6 +61,28 @@ class CartControllerTest {
             Assertions.assertEquals(2, cartDtoList.size());
             Assertions.assertNotNull(cartDtoList.getFirst().getCartId());
         });
+    }
+
+    @Test
+    @DisplayName("returns HTTP 200 when a cart requested")
+    void getCart_ShouldReturn200() throws Exception {
+        List<CartDto> cartDtoList = getCartDtoList();
+        CartDto cartDto = cartDtoList.stream().findFirst().orElse(new CartDto());
+        String cartId = cartDto.getCartId();
+
+        when(cartService.findByCartId(Mockito.anyString()))
+                .thenReturn(cartDto);
+
+        MvcResult response = mockMvc.perform(get("/carts/"+cartId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String responseString = response.getResponse().getContentAsString();
+        CartDto cartDtoResponse = objectMapper.readValue(responseString, CartDto.class);
+
+        Assertions.assertEquals(cartDto, cartDtoResponse);
+        Assertions.assertEquals(cartId, cartDtoResponse.getCartId());
     }
 
     private List<CartDto> getCartDtoList() {

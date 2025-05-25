@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -33,5 +34,12 @@ public class CartServiceImpl implements CartService {
         return cartRepository.findAll()
                 .stream().map(cart -> cartMapper.toCartDto(cart))
                 .toList();
+    }
+
+    @Override
+    public CartDto findByCartId(String cartId) {
+        Optional<Cart> optionalCart = cartRepository.findByCartId(cartId);
+        return optionalCart.map(cart -> cartMapper.toCartDto(cart))
+                .orElseThrow(() -> new RuntimeException(cartId));
     }
 }

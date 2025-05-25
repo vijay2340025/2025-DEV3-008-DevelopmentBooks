@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -67,6 +68,31 @@ class CartServiceImplTest {
         assertEquals(2, result.size());
         assertEquals(cartId1, result.get(0).getCartId());
         assertEquals(cartId2, result.get(1).getCartId());
+    }
+
+    @Test
+    @DisplayName("test cart by cartId")
+    void testFindByCartId_whenCartExists() {
+        String cartId = UUID.randomUUID().toString();
+        Cart cart = new Cart();
+        cart.setCartId(cartId);
+        CartDto cartDto = new CartDto(cartId);
+
+        when(cartRepository.findByCartId(cartId)).thenReturn(Optional.of(cart));
+        when(cartMapper.toCartDto(cart)).thenReturn(cartDto);
+
+        CartDto result = cartService.findByCartId(cartId);
+        assertNotNull(result);
+        assertEquals(cartId, result.getCartId());
+    }
+
+    @Test
+    @DisplayName("test exception when cart doesn't exist")
+    void testFindByCartId_whenCartDoesNotExist() {
+        String cartId = UUID.randomUUID().toString();
+        when(cartRepository.findByCartId(cartId)).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class, () -> cartService.findByCartId(cartId));
     }
 
     private Cart createCart() {

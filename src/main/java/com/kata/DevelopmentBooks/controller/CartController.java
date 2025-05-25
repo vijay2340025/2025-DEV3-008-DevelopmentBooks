@@ -4,10 +4,7 @@ import com.kata.DevelopmentBooks.dto.CartDto;
 import com.kata.DevelopmentBooks.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
@@ -29,5 +26,10 @@ public class CartController {
     @GetMapping(value = {"/", ""})
     public ResponseEntity<List<CartDto>> getCarts() {
         return ResponseEntity.ok(cartService.getAllCarts());
+    }
+
+    @GetMapping(value = {"/{cartId}", "/{cartId}/"})
+    public ResponseEntity<CartDto> getCartById(@PathVariable String cartId) {
+        return ResponseEntity.ok(cartService.findByCartId(cartId));
     }
 }
