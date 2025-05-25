@@ -1,6 +1,7 @@
 package com.kata.DevelopmentBooks.service.impl;
 
 import com.kata.DevelopmentBooks.dto.CartDto;
+import com.kata.DevelopmentBooks.exception.CartNotFoundException;
 import com.kata.DevelopmentBooks.mapper.CartMapper;
 import com.kata.DevelopmentBooks.model.Cart;
 import com.kata.DevelopmentBooks.repository.CartRepository;
@@ -92,7 +93,7 @@ class CartServiceImplTest {
         String cartId = UUID.randomUUID().toString();
         when(cartRepository.findByCartId(cartId)).thenReturn(Optional.empty());
 
-        assertThrows(RuntimeException.class, () -> cartService.findByCartId(cartId));
+        assertThrows(CartNotFoundException.class, () -> cartService.findByCartId(cartId));
     }
 
     private Cart createCart() {

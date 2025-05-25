@@ -1,6 +1,7 @@
 package com.kata.DevelopmentBooks.service.impl;
 
 import com.kata.DevelopmentBooks.dto.CartDto;
+import com.kata.DevelopmentBooks.exception.CartNotFoundException;
 import com.kata.DevelopmentBooks.mapper.CartMapper;
 import com.kata.DevelopmentBooks.model.Cart;
 import com.kata.DevelopmentBooks.repository.CartRepository;
@@ -40,6 +41,6 @@ public class CartServiceImpl implements CartService {
     public CartDto findByCartId(String cartId) {
         Optional<Cart> optionalCart = cartRepository.findByCartId(cartId);
         return optionalCart.map(cart -> cartMapper.toCartDto(cart))
-                .orElseThrow(() -> new RuntimeException(cartId));
+                .orElseThrow(() -> new CartNotFoundException(cartId));
     }
 }
