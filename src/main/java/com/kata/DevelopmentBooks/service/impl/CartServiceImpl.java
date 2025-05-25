@@ -8,6 +8,7 @@ import com.kata.DevelopmentBooks.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -25,5 +26,12 @@ public class CartServiceImpl implements CartService {
         cart.setCartId(UUID.randomUUID().toString());
         cartRepository.save(cart);
         return cartMapper.toCartDto(cart);
+    }
+
+    @Override
+    public List<CartDto> getAllCart() {
+        return cartRepository.findAll()
+                .stream().map(cart -> cartMapper.toCartDto(cart))
+                .toList();
     }
 }
