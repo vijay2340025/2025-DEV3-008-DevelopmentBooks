@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: DevelopmentBooks
+
+  data:
+    mongodb:
+      uri: mongodb+srv://admin:o3NBPc0vzav1LYSr@cluster1.ywkinwj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster1
+      database: bookstore
+
+server:
+  servlet:
+    context-path: /bookstore
+  port: 8080
