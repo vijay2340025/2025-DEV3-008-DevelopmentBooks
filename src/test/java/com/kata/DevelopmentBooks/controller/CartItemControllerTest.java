@@ -3,7 +3,9 @@ package com.kata.DevelopmentBooks.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kata.DevelopmentBooks.dto.CartDto;
 import com.kata.DevelopmentBooks.dto.CartItemDto;
+import com.kata.DevelopmentBooks.exception.ApiError;
 import com.kata.DevelopmentBooks.service.CartItemService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -12,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.List;
 import java.util.UUID;
@@ -65,11 +68,17 @@ class CartItemControllerTest {
                 Mockito.any()
         )).thenReturn(cartDto);
 
-        mockMvc.perform(post("/carts/" + cartId + "/lineitems/")
+        MvcResult mvcResult = mockMvc.perform(post("/carts/" + cartId + "/lineitems/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(cartDto.getItems())))
                 .andExpect(status().isBadRequest())
                 .andReturn();
+
+        ApiError apiError = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ApiError.class);
+
+        Assertions.assertEquals("Bad Request", apiError.getError());
+        Assertions.assertEquals(400, apiError.getStatus());
+        Assertions.assertEquals("addLineItem.cartItemDtoList[0].productId: must not be blank", apiError.getMessage().getFirst());
     }
 
     private List<CartDto> getCartDtoList() {

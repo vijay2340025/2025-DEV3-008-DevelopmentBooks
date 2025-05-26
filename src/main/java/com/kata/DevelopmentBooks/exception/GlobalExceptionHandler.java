@@ -1,5 +1,6 @@
 package com.kata.DevelopmentBooks.exception;
 
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -42,4 +43,21 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.badRequest().body(apiError);
     }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ApiError> handleConstraintErrors(ConstraintViolationException ex) {
+        ApiError apiError = new ApiError(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                ex.getConstraintViolations().stream()
+                        .map(violation -> String.format(
+                                "%s: %s",
+                                violation.getPropertyPath().toString(),
+                                violation.getMessage()
+                        ))
+                        .toList()
+        );
+        return ResponseEntity.badRequest().body(apiError);
+    }
+
 }
