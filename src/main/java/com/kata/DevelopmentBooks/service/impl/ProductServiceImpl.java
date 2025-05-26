@@ -44,4 +44,11 @@ public class ProductServiceImpl implements ProductService {
         return productByProductId.map(product -> productMapper.toProductDto(product))
                 .orElseThrow(() -> new ProductNotFoundException(productId));
     }
+
+    @Override
+    public void deleteProduct(String productId) {
+        Optional<Product> optionalProduct = productRepository.getProductByProductId(productId);
+        Product product = optionalProduct.orElseThrow(() -> new ProductNotFoundException(productId));
+        productRepository.delete(product);
+    }
 }

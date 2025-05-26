@@ -39,4 +39,10 @@ public class ProductController {
     public ResponseEntity<ProductDto> getProductByProductId(@PathVariable String productId) {
         return ResponseEntity.ok(productService.getProduct(productId));
     }
+
+    @DeleteMapping(value = {"/{productId}", "/{productId}/"})
+    public ResponseEntity<Void> deletedProductByProductId(@PathVariable String productId) {
+        productService.deleteProduct(productId);
+        return ResponseEntity.noContent().build();
+    }
 }

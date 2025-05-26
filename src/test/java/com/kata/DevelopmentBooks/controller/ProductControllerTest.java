@@ -167,4 +167,16 @@ class ProductControllerTest {
 
     }
 
+    @Test
+    @DisplayName("returns HTTP 204 when product is deleted")
+    void deleteProduct_ShouldReturn204() throws Exception {
+
+        when(productService.getProduct(Mockito.any(String.class)))
+                .thenReturn(getProductDtoList().getFirst());
+        MockHttpServletRequestBuilder mockHttpServletRequest = MockMvcRequestBuilders.delete("/products/prod001/")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(mockHttpServletRequest)
+                .andExpect(status().isNoContent());
+    }
 }
