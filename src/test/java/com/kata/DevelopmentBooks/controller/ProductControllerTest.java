@@ -2,7 +2,9 @@ package com.kata.DevelopmentBooks.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kata.DevelopmentBooks.dto.ProductDto;
+import com.kata.DevelopmentBooks.exception.ApiError;
 import com.kata.DevelopmentBooks.service.ProductService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -11,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.List;
 import java.util.stream.IntStream;
@@ -57,5 +60,33 @@ class ProductControllerTest {
                     productDto.setCurrency("EUR");
                     return productDto;
                 }).toList();
+    }
+
+    @Test
+    @DisplayName("returns HTTP 400 when invalid products are added")
+    void addProduct_InvalidInput_ShouldReturn400BadRequest() throws Exception {
+        ProductDto productDto = getProductDtoList().stream().findAny()
+                .orElse(new ProductDto());
+        productDto.setProductId("");
+        productDto.setProductName("");
+        productDto.setListPrice(0);
+        productDto.setCurrency("");
+
+        MvcResult mvcResult = mockMvc.perform(post("/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(productDto)))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+        ApiError apiError = objectMapper.readValue(contentAsString, ApiError.class);
+
+        Assertions.assertAll(() -> {
+            Assertions.assertEquals(4, apiError.getMessage().size());
+            Assertions.assertTrue(apiError.getMessage().contains("productId: must not be blank"));
+            Assertions.assertTrue(apiError.getMessage().contains("productName: must not be blank"));
+            Assertions.assertTrue(apiError.getMessage().contains("listPrice: must be greater than 0.0"));
+            Assertions.assertTrue(apiError.getMessage().contains("currency: must not be blank"));
+        });
     }
 }

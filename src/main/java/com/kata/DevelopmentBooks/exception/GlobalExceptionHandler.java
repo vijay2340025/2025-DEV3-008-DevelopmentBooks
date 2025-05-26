@@ -20,4 +20,16 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiError> handleValidationErrors(MethodArgumentNotValidException ex) {
+        ApiError apiError = new ApiError(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                ex.getBindingResult().getFieldErrors().stream()
+                        .map(err -> String.format("%s: %s", err.getField(), err.getDefaultMessage()))
+                        .toList()
+        );
+        return ResponseEntity.badRequest().body(apiError);
+    }
 }
