@@ -5,6 +5,8 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Document(collection = "cart")
 public class Cart {
 
@@ -12,4 +14,12 @@ public class Cart {
     @Setter
     @Id
     private String cartId;
+
+    @Getter
+    @Setter
+    private List<CartItem> items;
+
+    @Getter
+    @Setter
+    private PriceSummary pricing;
 }

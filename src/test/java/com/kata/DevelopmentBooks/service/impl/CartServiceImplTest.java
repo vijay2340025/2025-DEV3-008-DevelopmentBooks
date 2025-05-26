@@ -61,8 +61,8 @@ class CartServiceImplTest {
         String cartId2 = cart2.getCartId();
 
         when(cartRepository.findAll()).thenReturn(List.of(cart1, cart2));
-        when(cartMapper.toCartDto(cart1)).thenReturn(new CartDto(cartId1));
-        when(cartMapper.toCartDto(cart2)).thenReturn(new CartDto(cartId2));
+        when(cartMapper.toCartDto(cart1)).thenReturn(new CartDto(cartId1, null, null));
+        when(cartMapper.toCartDto(cart2)).thenReturn(new CartDto(cartId2, null, null));
         List<CartDto> result = cartService.getAllCarts();
 
         assertNotNull(result);
@@ -77,7 +77,7 @@ class CartServiceImplTest {
         String cartId = UUID.randomUUID().toString();
         Cart cart = new Cart();
         cart.setCartId(cartId);
-        CartDto cartDto = new CartDto(cartId);
+        CartDto cartDto = new CartDto(cartId, null, null);
 
         when(cartRepository.findByCartId(cartId)).thenReturn(Optional.of(cart));
         when(cartMapper.toCartDto(cart)).thenReturn(cartDto);
