@@ -105,7 +105,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/bookstore/carts/ea166aa1-ac83-47e6-9a22-f6bf11e62c37",
+							"raw": "http://localhost:8080/bookstore/carts/e8b13fd7-2159-4bd0-951d-e7c548e98557",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -114,7 +114,7 @@
 							"path": [
 								"bookstore",
 								"carts",
-								"ea166aa1-ac83-47e6-9a22-f6bf11e62c37"
+								"e8b13fd7-2159-4bd0-951d-e7c548e98557"
 							]
 						}
 					},
@@ -140,7 +140,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/bookstore/carts/ea166aa1-ac83-47e6-9a22-f6bf11e62c37",
+							"raw": "http://localhost:8080/bookstore/carts/28a9e6e0-ce4c-4907-9ad5-103b17961427",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -149,7 +149,7 @@
 							"path": [
 								"bookstore",
 								"carts",
-								"ea166aa1-ac83-47e6-9a22-f6bf11e62c37"
+								"28a9e6e0-ce4c-4907-9ad5-103b17961427"
 							]
 						}
 					},
@@ -167,7 +167,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"productId\": \"prod007\",\n    \"productName\": \"Clean Code\",\n    \"attributes\": {\n        \"author\": \"Robert C. Martin\",\n        \"year\": 2025,\n        \"isbn\": \"978-1234567890\"\n    },\n    \"listPrice\": 50,\n    \"currency\": \"EUR\"\n}",
+							"raw": "{\n    \"productId\": \"prod002\",\n    \"productName\": \"Clean Code II\",\n    \"attributes\": {\n        \"author\": \"Robert C. Martin\",\n        \"year\": 2025,\n        \"isbn\": \"978-1234567890\"\n    },\n    \"listPrice\": 50.0,\n    \"currency\": \"EUR\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -184,6 +184,197 @@
 							"path": [
 								"bookstore",
 								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Products",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/bookstore/products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"bookstore",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Product by productId",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/bookstore/products/prod001",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"bookstore",
+								"products",
+								"prod001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product by productId",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/bookstore/products/prod002",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"bookstore",
+								"products",
+								"prod002"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "LineItem",
+			"item": [
+				{
+					"name": "Add LineItem",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"productId\": \"prod001\",\n        \"quantity\": 2\n    },\n    {\n        \"productId\": \"prod002\",\n        \"quantity\": 1\n    },\n    {\n        \"productId\": \"prod003\",\n        \"quantity\": 2\n    },\n    {\n        \"productId\": \"prod004\",\n        \"quantity\": 1\n    },\n    {\n        \"productId\": \"prod005\",\n        \"quantity\": 2\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/bookstore/carts/e8b13fd7-2159-4bd0-951d-e7c548e98557/lineitems/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"bookstore",
+								"carts",
+								"e8b13fd7-2159-4bd0-951d-e7c548e98557",
+								"lineitems",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete LineItem",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/bookstore/carts/e8b13fd7-2159-4bd0-951d-e7c548e98557/lineitems/b2b8892d-c4d0-44e2-ad89-5cd1364d023a",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"bookstore",
+								"carts",
+								"e8b13fd7-2159-4bd0-951d-e7c548e98557",
+								"lineitems",
+								"b2b8892d-c4d0-44e2-ad89-5cd1364d023a"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Discount",
+			"item": [
+				{
+					"name": "Apply Discount",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/bookstore/carts/e8b13fd7-2159-4bd0-951d-e7c548e98557/discounts",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"bookstore",
+								"carts",
+								"e8b13fd7-2159-4bd0-951d-e7c548e98557",
+								"discounts"
 							]
 						}
 					},
