@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = {"/products"})
@@ -27,5 +28,10 @@ public class ProductController {
         URI location = URI.create(String.format("/bookstore/products/%s", productDto.getProductId()));
         productService.addProduct(productDto);
         return ResponseEntity.created(location).build();
+    }
+
+    @GetMapping(value = {"/", ""})
+    public ResponseEntity<List<ProductDto>> getProducts() {
+        return ResponseEntity.ok(productService.getProducts());
     }
 }

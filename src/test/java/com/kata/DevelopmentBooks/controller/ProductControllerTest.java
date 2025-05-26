@@ -1,5 +1,6 @@
 package com.kata.DevelopmentBooks.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kata.DevelopmentBooks.dto.ProductDto;
 import com.kata.DevelopmentBooks.exception.ApiError;
@@ -14,6 +15,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 import java.util.stream.IntStream;
@@ -87,6 +90,27 @@ class ProductControllerTest {
             Assertions.assertTrue(apiError.getMessage().contains("productName: must not be blank"));
             Assertions.assertTrue(apiError.getMessage().contains("listPrice: must be greater than 0.0"));
             Assertions.assertTrue(apiError.getMessage().contains("currency: must not be blank"));
+        });
+    }
+
+    @Test
+    @DisplayName("returns HTTP 200 when all products are requested")
+    void getAllProduct_ShouldReturn200() throws Exception {
+
+        when(productService.getProducts()).thenReturn(getProductDtoList());
+        MockHttpServletRequestBuilder mockHttpServletRequest = MockMvcRequestBuilders.get("/products")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult mvcResult = mockMvc.perform(mockHttpServletRequest)
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+        List<ProductDto> productDtos = objectMapper.readValue(contentAsString, new TypeReference<>() {
+        });
+        Assertions.assertAll(() -> {
+            Assertions.assertEquals(5, productDtos.size());
+            Assertions.assertEquals("EUR", productDtos.stream().findFirst().orElseThrow().getCurrency());
         });
     }
 }

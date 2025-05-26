@@ -6,11 +6,14 @@ import com.kata.DevelopmentBooks.mapper.ProductMapper;
 import com.kata.DevelopmentBooks.model.Product;
 import com.kata.DevelopmentBooks.model.ProductAttribute;
 import com.kata.DevelopmentBooks.repository.ProductRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
@@ -28,7 +31,8 @@ public class ProductServiceImplTest {
     private ProductMapper productMapper;
 
     @Test
-    void testSaveProductMapsAndSaves() {
+    @DisplayName("test create product")
+    void testCreateProduct() {
         ProductDto productDto = createSampleProductDto();
         Product product = createSampleProduct();
 
@@ -49,7 +53,7 @@ public class ProductServiceImplTest {
 
     private Product createSampleProduct() {
         ProductAttribute productAttribute = createProductAttribute();
-        return new Product( "prod001", "Clean Code", productAttribute, 50.0, "EUR");
+        return new Product("prod001", "Clean Code", productAttribute, 50.0, "EUR");
     }
 
     private ProductAttribute createProductAttribute() {
@@ -66,5 +70,22 @@ public class ProductServiceImplTest {
         productAttributeDto.setAuthor("Robert C. Martin");
         productAttributeDto.setYear(2020);
         return productAttributeDto;
+    }
+
+    @Test
+    @DisplayName("test get all products")
+    void testGetAllProducts() {
+        Product product = createSampleProduct();
+        ProductDto productDto = createSampleProductDto();
+
+        when(productRepository.findAll()).thenReturn(List.of(product));
+        when(productMapper.toProductDto(product)).thenReturn(productDto);
+
+        List<ProductDto> productDtoList = productService.getProducts();
+
+        assertEquals(1, productDtoList.size());
+        assertEquals("prod001", productDtoList.getFirst().getProductId());
+        verify(productRepository).findAll();
+        verify(productMapper).toProductDto(product);
     }
 }
