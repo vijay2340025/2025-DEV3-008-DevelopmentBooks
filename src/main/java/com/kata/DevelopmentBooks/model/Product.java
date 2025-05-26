@@ -11,8 +11,6 @@ import org.springframework.data.annotation.Id;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Product {
-    private String key;
-
     @Id
     private String productId;
     private String name;
