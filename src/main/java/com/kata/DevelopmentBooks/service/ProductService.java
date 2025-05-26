@@ -10,4 +10,5 @@ import java.util.List;
 public interface ProductService {
     ProductDto addProduct(ProductDto productDto);
     List<ProductDto> getProducts();
+    ProductDto getProduct(String productId);
 }

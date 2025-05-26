@@ -113,4 +113,26 @@ class ProductControllerTest {
             Assertions.assertEquals("EUR", productDtos.stream().findFirst().orElseThrow().getCurrency());
         });
     }
+
+    @Test
+    @DisplayName("returns HTTP 200 when product is requested")
+    void getProductByProductId_ShouldReturn200() throws Exception {
+
+        when(productService.getProduct(Mockito.any(String.class)))
+                .thenReturn(getProductDtoList().getFirst());
+        MockHttpServletRequestBuilder mockHttpServletRequest = MockMvcRequestBuilders.get("/products/prod001/")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult mvcResult = mockMvc.perform(mockHttpServletRequest)
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+        ProductDto productDto = objectMapper.readValue(contentAsString, ProductDto.class);
+
+        Assertions.assertAll(() -> {
+            Assertions.assertEquals("prod001", productDto.getProductId());
+            Assertions.assertEquals("EUR", productDto.getCurrency());
+        });
+    }
 }

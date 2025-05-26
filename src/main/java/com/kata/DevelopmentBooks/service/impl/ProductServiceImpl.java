@@ -2,6 +2,7 @@ package com.kata.DevelopmentBooks.service.impl;
 
 
 import com.kata.DevelopmentBooks.dto.ProductDto;
+import com.kata.DevelopmentBooks.exception.ProductNotFoundException;
 import com.kata.DevelopmentBooks.mapper.ProductMapper;
 import com.kata.DevelopmentBooks.model.Product;
 import com.kata.DevelopmentBooks.repository.ProductRepository;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,5 +36,12 @@ public class ProductServiceImpl implements ProductService {
         return products.stream()
                 .map(product -> productMapper.toProductDto(product))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public ProductDto getProduct(String productId) {
+        Optional<Product> productByProductId = productRepository.getProductByProductId(productId);
+        return productByProductId.map(product -> productMapper.toProductDto(product))
+                .orElseThrow(() -> new ProductNotFoundException(productId));
     }
 }

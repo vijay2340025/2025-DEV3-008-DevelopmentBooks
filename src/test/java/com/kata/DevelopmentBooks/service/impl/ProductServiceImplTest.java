@@ -2,6 +2,7 @@ package com.kata.DevelopmentBooks.service.impl;
 
 import com.kata.DevelopmentBooks.dto.ProductAttributeDto;
 import com.kata.DevelopmentBooks.dto.ProductDto;
+import com.kata.DevelopmentBooks.exception.ProductNotFoundException;
 import com.kata.DevelopmentBooks.mapper.ProductMapper;
 import com.kata.DevelopmentBooks.model.Product;
 import com.kata.DevelopmentBooks.model.ProductAttribute;
@@ -14,8 +15,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -87,5 +90,30 @@ public class ProductServiceImplTest {
         assertEquals("prod001", productDtoList.getFirst().getProductId());
         verify(productRepository).findAll();
         verify(productMapper).toProductDto(product);
+    }
+
+    @Test
+    @DisplayName("test get a product by productId")
+    void testGetProductByProductId() {
+        Product product = createSampleProduct();
+        ProductDto productDto = createSampleProductDto();
+
+        when(productRepository.getProductByProductId("prod001")).thenReturn(Optional.of(product));
+        when(productMapper.toProductDto(product)).thenReturn(productDto);
+
+        ProductDto result = productService.getProduct("prod001");
+
+        assertEquals("prod001", result.getProductId());
+        verify(productRepository).getProductByProductId("prod001");
+    }
+
+    @Test
+    @DisplayName("test ProductNotFoundException when productId doesn't exists")
+    void testGetProductThrowsIfNotFound() {
+        when(productRepository.getProductByProductId("P999")).thenReturn(Optional.empty());
+
+        assertThrows(ProductNotFoundException.class, () -> productService.getProduct("P999"));
+
+        verify(productRepository).getProductByProductId("P999");
     }
 }

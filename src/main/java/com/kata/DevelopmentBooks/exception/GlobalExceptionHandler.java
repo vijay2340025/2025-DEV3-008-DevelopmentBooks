@@ -12,7 +12,17 @@ import java.util.List;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(CartNotFoundException.class)
-    public ResponseEntity<ApiError> handleCartNotFound(CartNotFoundException ex) {
+    public ResponseEntity<ApiError> handleCartNotFoundException(CartNotFoundException ex) {
+        ApiError error = new ApiError(
+                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND.getReasonPhrase(),
+                List.of(ex.getMessage())
+        );
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<ApiError> handleProductNotFoundException(ProductNotFoundException ex) {
         ApiError error = new ApiError(
                 HttpStatus.NOT_FOUND.value(),
                 HttpStatus.NOT_FOUND.getReasonPhrase(),

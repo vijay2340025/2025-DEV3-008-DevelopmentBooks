@@ -34,4 +34,9 @@ public class ProductController {
     public ResponseEntity<List<ProductDto>> getProducts() {
         return ResponseEntity.ok(productService.getProducts());
     }
+
+    @GetMapping(value = {"/{productId}", "/{productId}/"})
+    public ResponseEntity<ProductDto> getProductByProductId(@PathVariable String productId) {
+        return ResponseEntity.ok(productService.getProduct(productId));
+    }
 }
