@@ -20,12 +20,12 @@ This API provides basic functionality for managing shopping carts in the Develop
   mvn spring-boot:run
 ```
 
-## 📌 Endpoints ##
+## 📌 User Journey ##
 
 ---
 
 
-### 📍 1. Create a New Cart
+###  1. Create a New Cart
 
 **POST** `/carts/`
 
@@ -43,76 +43,11 @@ Creates a new cart and returns the cart details.
 
 ```json
 {
-    "cartId": "ea166aa1-ac83-47e6-9a22-f6bf11e62c37"
+    "cartId": "2b88a4bb-afb7-45ae-99c0-bddf907e7058"
 }
 ```
 
-### 📍 2. Get All Carts
-
-**GET** `/carts/`
-
-Get all carts along with details
-
-```bash
-  curl --location 'http://localhost:8080/bookstore/carts/' \
-  --header 'Content-Type: application/json' \
-  --data ''
-```
-
-#### ✅ Response
-- **200 Ok**
-- **Body**:
-
-```json
-[
-  {
-    "cartId": "ea166aa1-ac83-47e6-9a22-f6bf11e62c37"
-  },
-  {
-    "cartId": "db8c119a-1d3f-4595-954c-73f862f0d6a0"
-  }
-]
-```
-
-### 📍 3. Get Cart by cartId
-
-**GET** `/carts/{cartId}`
-
-Get a carts along with details
-
-```bash
-  curl --location 'http://localhost:8080/bookstore/carts/ea166aa1-ac83-47e6-9a22-f6bf11e62c37' \
-  --header 'Content-Type: application/json' \
-  --data ''
-```
-
-#### ✅ Response
-- **200 Ok**
-- **Body**:
-
-```json
-{
-  "cartId": "db8c119a-1d3f-4595-954c-73f862f0d6a0"
-}
-```
-
-### 📍 4. Detele Cart by cartId
-
-**DELETE** `/carts/{cartId}`
-
-Delete the cart mentioned in the path variable
-
-```bash
-  curl --location --request DELETE 'http://localhost:8080/bookstore/carts/ea166aa1-ac83-47e6-9a22-f6bf11e62c37' \
-  --header 'Content-Type: application/json' \
-  --data ''
-```
-
-#### ✅ Response
-- **204 No Content**
-
-
-### 📍 5. Create a Product
+### 2. Create a Product
 
 **POST** `/products/`
 
@@ -122,7 +57,7 @@ Creates a new product
     curl --location 'http://localhost:8080/bookstore/products' \
     --header 'Content-Type: application/json' \
     --data '{
-        "productId": "prod007",
+        "productId": "prod001",
         "productName": "Clean Code",
         "attributes": {
             "author": "Robert C. Martin",
@@ -136,3 +71,198 @@ Creates a new product
 
 #### ✅ Response
 - **201 Created**
+
+### 3. Get all Products
+
+**GET** `/products/`
+
+Creates a new product
+
+```bash
+    curl --location 'http://localhost:8080/bookstore/products' \
+  --data ''
+```
+
+#### ✅ Response
+- **201 Created**
+- **Body**:
+
+```json
+[
+  {
+    "productId": "prod002",
+    "productName": "Clean Code II",
+    "attributes": {
+      "isbn": "978-1234567890",
+      "author": "Robert C. Martin",
+      "year": 2025
+    },
+    "listPrice": 50.0,
+    "currency": "EUR"
+  },
+  {
+    "productId": "prod001",
+    "productName": "Clean Code",
+    "attributes": {
+      "isbn": "978-1234567890",
+      "author": "Robert C. Martin",
+      "year": 2025
+    },
+    "listPrice": 50.0,
+    "currency": "EUR"
+  }
+]
+```
+
+### 4. Add items to cart
+
+**POST** `carts/{cartId}/lineitems/`
+
+Add lineitems to cart
+
+```bash
+   curl --location 'http://localhost:8080/bookstore/carts/2b88a4bb-afb7-45ae-99c0-bddf907e7058/lineitems/' \
+--header 'Content-Type: application/json' \
+--data '[
+    {
+        "productId": "prod001",
+        "quantity": 2
+    },
+    {
+        "productId": "prod002",
+        "quantity": 1
+    },
+    {
+        "productId": "prod003",
+        "quantity": 2
+    },
+    {
+        "productId": "prod004",
+        "quantity": 1
+    },
+    {
+        "productId": "prod005",
+        "quantity": 2
+    }
+]'
+```
+
+#### ✅ Response
+- **200 Created**
+- **Body**:
+
+```json
+{
+  "cartId": "2b88a4bb-afb7-45ae-99c0-bddf907e7058",
+  "items": [
+    {
+      "itemId": "33656253-30f4-497c-a5bd-1aff3d237e48",
+      "productId": "prod003",
+      "quantity": 2
+    },
+    {
+      "itemId": "c2a0e11c-2fe7-405f-8ff2-1b5e7f38c1de",
+      "productId": "prod004",
+      "quantity": 1
+    },
+    {
+      "itemId": "3bbabea9-2111-40f0-99c2-a8ff5164adc8",
+      "productId": "prod005",
+      "quantity": 2
+    },
+    {
+      "itemId": "39d785f8-2803-4c56-924e-295c5724ee34",
+      "productId": "prod001",
+      "quantity": 2
+    },
+    {
+      "itemId": "046cee0d-9c8b-47ec-b423-51fbbf8f479e",
+      "productId": "prod002",
+      "quantity": 1
+    }
+  ],
+  "pricing": {
+    "currency": "EUR",
+    "originalPrice": 400.0,
+    "discountedPrice": 0.0
+  }
+}
+```
+
+### 5. Apply Discounts
+
+**GET** `carts/{cartId}/discounts/`
+
+Add discounts to the cart
+
+```bash
+   curl --location 'http://localhost:8080/bookstore/carts/2b88a4bb-afb7-45ae-99c0-bddf907e7058/lineitems/' \
+--header 'Content-Type: application/json' \
+--data '[
+    {
+        "productId": "prod001",
+        "quantity": 2
+    },
+    {
+        "productId": "prod002",
+        "quantity": 1
+    },
+    {
+        "productId": "prod003",
+        "quantity": 2
+    },
+    {
+        "productId": "prod004",
+        "quantity": 1
+    },
+    {
+        "productId": "prod005",
+        "quantity": 2
+    }
+]'
+```
+
+#### ✅ Response
+- **200 OK **
+- **Body**:
+
+```json
+{
+  "cartId": "2b88a4bb-afb7-45ae-99c0-bddf907e7058",
+  "items": [
+    {
+      "itemId": "33656253-30f4-497c-a5bd-1aff3d237e48",
+      "productId": "prod003",
+      "quantity": 2
+    },
+    {
+      "itemId": "c2a0e11c-2fe7-405f-8ff2-1b5e7f38c1de",
+      "productId": "prod004",
+      "quantity": 1
+    },
+    {
+      "itemId": "3bbabea9-2111-40f0-99c2-a8ff5164adc8",
+      "productId": "prod005",
+      "quantity": 2
+    },
+    {
+      "itemId": "39d785f8-2803-4c56-924e-295c5724ee34",
+      "productId": "prod001",
+      "quantity": 2
+    },
+    {
+      "itemId": "046cee0d-9c8b-47ec-b423-51fbbf8f479e",
+      "productId": "prod002",
+      "quantity": 1
+    }
+  ],
+  "pricing": {
+    "currency": "EUR",
+    "originalPrice": 400.0,
+    "discountedPrice": 320.0
+  }
+}
+```
+
+
+
