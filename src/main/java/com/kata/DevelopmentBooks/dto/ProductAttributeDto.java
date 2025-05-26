@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductAttributeDto {
-    private String ISBN;
+    private String isbn;
 
     private String author;
 

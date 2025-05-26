@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class ProductAttribute {
-    private String ISBN;
+    private String isbn;
     private String author;
     private int year;
 }

@@ -33,14 +33,14 @@ class ProductMapperTest {
         ProductAttributeDto attributesDto = productDto.getAttributes();
         assertNotNull(attributesDto);
 
-        assertEquals(attribute.getISBN(), attributesDto.getISBN());
+        assertEquals(attribute.getIsbn(), attributesDto.getIsbn());
         assertEquals(attribute.getAuthor(), attributesDto.getAuthor());
         assertEquals(attribute.getYear(), attributesDto.getYear());
     }
 
     private static ProductAttribute getAttribute() {
         ProductAttribute attribute = new ProductAttribute();
-        attribute.setISBN("978-1234567890");
+        attribute.setIsbn("978-1234567890");
         attribute.setAuthor("Vijay");
         attribute.setYear(2020);
         return attribute;
@@ -72,7 +72,7 @@ class ProductMapperTest {
 
         ProductAttribute attributes = product.getAttributes();
         assertNotNull(attributes);
-        assertEquals(attributeDto.getISBN(), attributes.getISBN());
+        assertEquals(attributeDto.getIsbn(), attributes.getIsbn());
         assertEquals(attributeDto.getAuthor(), attributes.getAuthor());
         assertEquals(attributeDto.getYear(), attributes.getYear());
 
@@ -95,7 +95,7 @@ class ProductMapperTest {
         ProductAttributeDto attributeDto = productMapper.toProductAttributeDto(attribute);
 
         assertNotNull(attributeDto);
-        assertEquals(attribute.getISBN(), attributeDto.getISBN());
+        assertEquals(attribute.getIsbn(), attributeDto.getIsbn());
         assertEquals(attribute.getAuthor(), attributeDto.getAuthor());
         assertEquals(attribute.getYear(), attributeDto.getYear());
     }

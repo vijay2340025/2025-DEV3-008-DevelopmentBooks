@@ -38,7 +38,7 @@ public class ProductServiceImplTest {
 
         verify(productRepository).save(product);
         assertEquals(productDto, result);
-        assertEquals(productDto.getAttributes().getISBN(), product.getAttributes().getISBN());
+        assertEquals(productDto.getAttributes().getIsbn(), product.getAttributes().getIsbn());
     }
 
     private ProductDto createSampleProductDto() {
@@ -54,7 +54,7 @@ public class ProductServiceImplTest {
 
     private ProductAttribute createProductAttribute() {
         ProductAttribute productAttribute = new ProductAttribute();
-        productAttribute.setISBN("978-1234567890");
+        productAttribute.setIsbn("978-1234567890");
         productAttribute.setAuthor("Robert C. Martin");
         productAttribute.setYear(2020);
         return productAttribute;
@@ -62,7 +62,7 @@ public class ProductServiceImplTest {
 
     private ProductAttributeDto createProductAttributeDto() {
         ProductAttributeDto productAttributeDto = new ProductAttributeDto();
-        productAttributeDto.setISBN("978-1234567890");
+        productAttributeDto.setIsbn("978-1234567890");
         productAttributeDto.setAuthor("Robert C. Martin");
         productAttributeDto.setYear(2020);
         return productAttributeDto;
