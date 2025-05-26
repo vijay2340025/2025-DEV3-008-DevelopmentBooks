@@ -156,6 +156,40 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Add Product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"productId\": \"prod007\",\n    \"productName\": \"Clean Code\",\n    \"attributes\": {\n        \"author\": \"Robert C. Martin\",\n        \"year\": 2025,\n        \"isbn\": \"978-1234567890\"\n    },\n    \"listPrice\": 50,\n    \"currency\": \"EUR\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/bookstore/products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"bookstore",
+								"products"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
