@@ -94,7 +94,7 @@ public class ProductServiceImplTest {
 
     @Test
     @DisplayName("test get a product by productId")
-    void testGetProductByProductId() {
+    void testGetProductByProductId_whenProductExists() {
         Product product = createSampleProduct();
         ProductDto productDto = createSampleProductDto();
 
@@ -109,7 +109,7 @@ public class ProductServiceImplTest {
 
     @Test
     @DisplayName("test ProductNotFoundException when productId doesn't exists")
-    void testGetProductThrowsProductNotFoundException() {
+    void testGetProductByProductId_whenProductDoesNotExists() {
         when(productRepository.getProductByProductId("prod001")).thenReturn(Optional.empty());
 
         assertThrows(ProductNotFoundException.class, () -> productService.getProduct("prod001"));
@@ -119,7 +119,7 @@ public class ProductServiceImplTest {
 
     @Test
     @DisplayName("test delete product by productId")
-    void testDeleteProduct() {
+    void testDeleteProductByProductId_whenProductExists() {
         Product product = createSampleProduct();
         when(productRepository.getProductByProductId("prod001")).thenReturn(Optional.of(product));
 
@@ -128,8 +128,8 @@ public class ProductServiceImplTest {
     }
 
     @Test
-    @DisplayName("test delete throws ProductNotFoundException")
-    void testDeleteProductThrowsProductNotFoundException() {
+    @DisplayName("test ProductNotFoundException when productId doesn't exists in deleteProduct")
+    void testDeleteProductByProductId_whenProductDoesNotExists() {
         when(productRepository.getProductByProductId("prod001")).thenReturn(Optional.empty());
 
         assertThrows(ProductNotFoundException.class, () -> productService.deleteProduct("prod001"));
