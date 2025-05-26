@@ -136,4 +136,48 @@ class CartItemServiceImplTest {
         verify(cartRepository).findByCartId(cartId);
     }
 
+    @Test
+    @DisplayName("test delete cart item")
+    void testDeleteCartItem() {
+        String cartId = UUID.randomUUID().toString();
+        String itemId = UUID.randomUUID().toString();
+
+        Cart cart = createEmptyCart();
+        CartItem cartItem = new CartItem();
+        cartItem.setItemId(UUID.randomUUID().toString());
+        cartItem.setProductId("prod001");
+        cartItem.setQuantity(3);
+        cart.setItems(List.of(cartItem));
+
+        when(cartRepository.findByCartId(cartId))
+                .thenReturn(Optional.of(cart));
+        when(productRepository.findById("prod001"))
+                .thenReturn(Optional.of(createProduct()));
+
+        cartItemService.deleteCartItem(cartId, itemId);
+
+        verify(cartRepository).save(cart);
+    }
+    @Test
+    @DisplayName("test delete cart when product doesn't exist")
+    void testDeleteCartItem_whenProductNotFound() {
+        String cartId = UUID.randomUUID().toString();
+        String itemId = UUID.randomUUID().toString();
+
+        Cart cart = createEmptyCart();
+        CartItem cartItem = new CartItem();
+        cartItem.setItemId(UUID.randomUUID().toString());
+        cartItem.setProductId("prod001");
+        cartItem.setQuantity(3);
+        cart.setItems(List.of(cartItem));
+
+        when(cartRepository.findByCartId(cartId))
+                .thenReturn(Optional.of(cart));
+
+        assertThrows(ProductNotFoundException.class, () -> {
+            cartItemService.deleteCartItem(cartId, itemId);
+        });
+
+    }
+
 }

@@ -25,4 +25,10 @@ public class CartItemController {
         CartDto cartDto = cartItemService.addCartItem(cartId, cartItemDtoList);
         return ResponseEntity.status(HttpStatus.CREATED).body(cartDto);
     }
+
+    @DeleteMapping(value = {"/{itemId}"})
+    public ResponseEntity<CartDto> deleteLineItemById(@PathVariable String cartId, @PathVariable String itemId) {
+        CartDto cartDto = cartItemService.deleteCartItem(cartId, itemId);
+        return ResponseEntity.ok().body(cartDto);
+    }
 }

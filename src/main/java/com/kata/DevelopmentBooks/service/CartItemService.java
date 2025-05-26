@@ -9,4 +9,5 @@ import java.util.List;
 @Service
 public interface CartItemService {
     CartDto addCartItem(String cartId, List<CartItemDto> cartItemDtoList);
+    CartDto deleteCartItem(String cartId, String itemId);
 }

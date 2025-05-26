@@ -73,6 +73,18 @@ public class CartItemServiceImpl implements CartItemService {
         return cartMapper.toCartDto(updatedCart);
     }
 
+    @Override
+    public CartDto deleteCartItem(String cartId, String itemId) {
+        Optional<Cart> optionalCart = cartRepository.findByCartId(cartId);
+        Cart cart = optionalCart.orElseThrow(() -> new CartNotFoundException(cartId));
+        List<CartItem> updatedCartItemList = cart.getItems().stream()
+                .filter(cartItem -> !cartItem.getItemId().equals(itemId))
+                .toList();
+        cart.setItems(updatedCartItemList);
+        updatePriceSummary(cart);
+        return cartMapper.toCartDto(cartRepository.save(cart));
+    }
+
     private void updatePriceSummary(Cart cart) {
         AtomicReference<Double> total = new AtomicReference<>(0d);
         cart.getItems()

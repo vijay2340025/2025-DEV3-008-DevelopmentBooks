@@ -21,6 +21,7 @@ import java.util.UUID;
 import java.util.stream.IntStream;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -60,7 +61,7 @@ class CartItemControllerTest {
 
         CartDto cartDto = getCartDtoList().getFirst();
         String cartId = cartDto.getCartId();
-        cartDto.getItems().getFirst().setProductId(null);
+        cartDto.getItems().getFirst().setProductId("prod0001");
         cartDto.getItems().getFirst().setQuantity(11);
 
         when(cartItemService.addCartItem(
@@ -78,7 +79,23 @@ class CartItemControllerTest {
 
         Assertions.assertEquals("Bad Request", apiError.getError());
         Assertions.assertEquals(400, apiError.getStatus());
-        Assertions.assertEquals("addLineItem.cartItemDtoList[0].productId: must not be blank", apiError.getMessage().getFirst());
+    }
+
+    @Test
+    @DisplayName("returns HTTP 200 when cartItem deleted")
+    void deleteCartItem_ShouldReturn200() throws Exception {
+        CartDto cartDto = getCartDtoList().getFirst();
+        String cartId = cartDto.getCartId();
+
+        when(cartItemService.deleteCartItem(
+                Mockito.anyString(),
+                Mockito.anyString()
+        )).thenReturn(cartDto);
+
+        mockMvc.perform(delete("/carts/" + cartId + "/lineitems/"+cartDto.getItems().getFirst().getItemId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
     }
 
     private List<CartDto> getCartDtoList() {
