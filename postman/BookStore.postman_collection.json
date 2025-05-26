@@ -119,6 +119,41 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Delete Cart by cartId",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/bookstore/carts/ea166aa1-ac83-47e6-9a22-f6bf11e62c37",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"bookstore",
+								"carts",
+								"ea166aa1-ac83-47e6-9a22-f6bf11e62c37"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}

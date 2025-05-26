@@ -43,4 +43,11 @@ public class CartServiceImpl implements CartService {
         return optionalCart.map(cart -> cartMapper.toCartDto(cart))
                 .orElseThrow(() -> new CartNotFoundException(cartId));
     }
+
+    @Override
+    public void deleteByCartId(String cartId) {
+        Optional<Cart> optionalCart = cartRepository.findByCartId(cartId);
+        Cart cart = optionalCart.orElseThrow(() -> new CartNotFoundException(cartId));
+        cartRepository.delete(cart);
+    }
 }

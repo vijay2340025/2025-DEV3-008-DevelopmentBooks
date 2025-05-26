@@ -10,4 +10,5 @@ public interface CartService {
     CartDto createCart();
     List<CartDto> getAllCarts();
     CartDto findByCartId(String cartId);
+    void deleteByCartId(String cartId);
 }

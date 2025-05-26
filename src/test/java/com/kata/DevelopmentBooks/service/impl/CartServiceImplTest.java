@@ -96,6 +96,28 @@ class CartServiceImplTest {
         assertThrows(CartNotFoundException.class, () -> cartService.findByCartId(cartId));
     }
 
+    @Test
+    @DisplayName("test delete by cartId")
+    void testDeleteByCartId_whenCartExists() {
+        String cartId = UUID.randomUUID().toString();
+        Cart cart = new Cart();
+        cart.setCartId(cartId);
+
+        when(cartRepository.findByCartId(cartId)).thenReturn(Optional.of(cart));
+        cartService.deleteByCartId(cartId);
+
+        verify(cartRepository).delete(cart);
+    }
+
+    @Test
+    @DisplayName("test delete by cartId when doesn't exist")
+    void testDeleteByCartId_whenCartDoesNotExist() {
+        String cartId = UUID.randomUUID().toString();
+        when(cartRepository.findByCartId(cartId)).thenReturn(Optional.empty());
+
+        assertThrows(CartNotFoundException.class, () -> cartService.deleteByCartId(cartId));
+    }
+
     private Cart createCart() {
         Cart cart = new Cart();
         cart.setCartId(UUID.randomUUID().toString());

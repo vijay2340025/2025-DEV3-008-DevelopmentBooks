@@ -32,4 +32,10 @@ public class CartController {
     public ResponseEntity<CartDto> getCartById(@PathVariable String cartId) {
         return ResponseEntity.ok(cartService.findByCartId(cartId));
     }
+
+    @DeleteMapping(value = {"/{cartId}", "/{cartId}/"})
+    public ResponseEntity<Void> deleteCartById(@PathVariable String cartId) {
+        cartService.deleteByCartId(cartId);
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -19,9 +19,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(CartController.class)
@@ -83,6 +83,20 @@ class CartControllerTest {
 
         Assertions.assertEquals(cartDto, cartDtoResponse);
         Assertions.assertEquals(cartId, cartDtoResponse.getCartId());
+    }
+
+    @Test
+    @DisplayName("returns HTTP 204 when a cart deleted")
+    void deleteCart_ShouldReturn204() throws Exception {
+        List<CartDto> cartDtoList = getCartDtoList();
+        CartDto cartDto = cartDtoList.stream().findFirst().orElse(new CartDto());
+        String cartId = cartDto.getCartId();
+
+        doNothing().when(cartService).deleteByCartId(Mockito.anyString());
+
+        mockMvc.perform(delete("/carts/"+cartId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
     }
 
     private List<CartDto> getCartDtoList() {
