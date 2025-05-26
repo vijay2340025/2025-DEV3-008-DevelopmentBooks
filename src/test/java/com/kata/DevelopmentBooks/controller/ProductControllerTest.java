@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kata.DevelopmentBooks.dto.ProductDto;
 import com.kata.DevelopmentBooks.exception.ApiError;
+import com.kata.DevelopmentBooks.exception.GlobalExceptionHandler;
+import com.kata.DevelopmentBooks.exception.ProductNotFoundException;
 import com.kata.DevelopmentBooks.service.ProductService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -21,12 +24,17 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProductController.class)
+@Import(GlobalExceptionHandler.class)
 class ProductControllerTest {
 
     @Autowired
@@ -85,11 +93,11 @@ class ProductControllerTest {
         ApiError apiError = objectMapper.readValue(contentAsString, ApiError.class);
 
         Assertions.assertAll(() -> {
-            Assertions.assertEquals(4, apiError.getMessage().size());
-            Assertions.assertTrue(apiError.getMessage().contains("productId: must not be blank"));
-            Assertions.assertTrue(apiError.getMessage().contains("productName: must not be blank"));
-            Assertions.assertTrue(apiError.getMessage().contains("listPrice: must be greater than 0.0"));
-            Assertions.assertTrue(apiError.getMessage().contains("currency: must not be blank"));
+            assertEquals(4, apiError.getMessage().size());
+            assertTrue(apiError.getMessage().contains("productId: must not be blank"));
+            assertTrue(apiError.getMessage().contains("productName: must not be blank"));
+            assertTrue(apiError.getMessage().contains("listPrice: must be greater than 0.0"));
+            assertTrue(apiError.getMessage().contains("currency: must not be blank"));
         });
     }
 
@@ -109,8 +117,8 @@ class ProductControllerTest {
         List<ProductDto> productDtos = objectMapper.readValue(contentAsString, new TypeReference<>() {
         });
         Assertions.assertAll(() -> {
-            Assertions.assertEquals(5, productDtos.size());
-            Assertions.assertEquals("EUR", productDtos.stream().findFirst().orElseThrow().getCurrency());
+            assertEquals(5, productDtos.size());
+            assertEquals("EUR", productDtos.stream().findFirst().orElseThrow().getCurrency());
         });
     }
 
@@ -131,8 +139,32 @@ class ProductControllerTest {
         ProductDto productDto = objectMapper.readValue(contentAsString, ProductDto.class);
 
         Assertions.assertAll(() -> {
-            Assertions.assertEquals("prod001", productDto.getProductId());
-            Assertions.assertEquals("EUR", productDto.getCurrency());
+            assertEquals("prod001", productDto.getProductId());
+            assertEquals("EUR", productDto.getCurrency());
         });
     }
+
+    @Test
+    @DisplayName("returns HTTP 404 when product not found")
+    void getProductByProductId_ShouldReturn404() throws Exception {
+        String productId = "prod001";
+        Mockito.when(productService.getProduct(anyString()))
+                .thenThrow(new ProductNotFoundException(productId));
+
+        MvcResult mvcResult = mockMvc.perform(get("/products/{productId}", productId)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+        ApiError apiError = objectMapper.readValue(contentAsString, ApiError.class);
+
+        Assertions.assertAll(() -> {
+            assertEquals(404, apiError.getStatus());
+            assertEquals("Not Found", apiError.getError());
+            assertEquals("Product not found with ID: prod001", apiError.getMessage().getFirst());
+        });
+
+    }
+
 }
