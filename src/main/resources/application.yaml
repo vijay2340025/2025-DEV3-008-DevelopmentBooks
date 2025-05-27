@@ -2,10 +2,13 @@ spring:
   application:
     name: DevelopmentBooks
 
-  data:
-    mongodb:
-      uri: mongodb+srv://admin:o3NBPc0vzav1LYSr@cluster1.ywkinwj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster1
-      database: bookstore
+bookstore:
+  mongo:
+    username: admin
+    password:
+    host: cluster1.ywkinwj.mongodb.net
+    database: bookstore
+    options: ?retryWrites=true&w=majority&appName=Cluster1
 
 server:
   servlet:
