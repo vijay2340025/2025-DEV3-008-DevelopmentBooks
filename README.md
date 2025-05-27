@@ -9,16 +9,24 @@ This API provides basic functionality for managing shopping carts in the Develop
 - Maven
 - Postman
 
-### Build the Project
-
+###  Build and run the Project
+![Maven](https://img.shields.io/badge/build-Maven-C71A36?logo=apachemaven&logoColor=white)
 ```bash
   mvn clean install
 ```
-
-### Run the Project
 ```bash  
   mvn spring-boot:run
 ```
+
+### Run the Project using Docker
+![Docker](https://img.shields.io/badge/docker-ready-blue?logo=docker)
+```bash
+  docker build -t bookstore:latest . 
+```
+```bash  
+  docker run -it --name bookstore --rm -p 8080:8080 bookstore:latest
+```
+
 
 ## 📌 User Journey ##
 
