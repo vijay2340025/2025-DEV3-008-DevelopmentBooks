@@ -8,7 +8,6 @@ import com.kata.DevelopmentBooks.model.CartItem;
 import com.kata.DevelopmentBooks.model.PriceSummary;
 import com.kata.DevelopmentBooks.service.DiscountService;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
 import org.mockito.Spy;
@@ -18,14 +17,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(DiscountController.class) // Replace with your actual controller class

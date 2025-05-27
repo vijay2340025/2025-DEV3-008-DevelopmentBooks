@@ -6,7 +6,9 @@ import com.kata.DevelopmentBooks.exception.CartNotFoundException;
 import com.kata.DevelopmentBooks.mapper.CartMapper;
 import com.kata.DevelopmentBooks.model.Cart;
 import com.kata.DevelopmentBooks.model.CartItem;
+import com.kata.DevelopmentBooks.model.Product;
 import com.kata.DevelopmentBooks.repository.CartRepository;
+import com.kata.DevelopmentBooks.repository.ProductRepository;
 import com.kata.DevelopmentBooks.service.DiscountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,9 @@ public class DiscountServiceImpl implements DiscountService {
     CartRepository cartRepository;
 
     @Autowired
+    ProductRepository productRepository;
+
+    @Autowired
     CartMapper cartMapper;
 
     @Override
@@ -37,6 +42,11 @@ public class DiscountServiceImpl implements DiscountService {
         return cartMapper.toCartDto(cartRepository.save(cart));
     }
 
+    /**
+     * Convert cart to LinkedHashMap of Product:Quantity sorted in descending order
+     * @param cart
+     * @return
+     */
     private static HashMap<String, Integer> getCartMap(Cart cart) {
         return cart.getItems().stream()
                 .collect(Collectors.toMap(
@@ -53,37 +63,54 @@ public class DiscountServiceImpl implements DiscountService {
                 ));
     }
 
-    private Optional<Double> findMinDiscountPrice(Cart c) {
+    /**
+     *
+     * @param cart
+     * Calculate the min discount price in a given cart based on the line items added
+     * @return minDiscountPrice
+     */
+    private Optional<Double> findMinDiscountPrice(Cart cart) {
         ArrayList<Double> possiblePrices = new ArrayList<>();
+        Map<String, Double> productPriceMap = getProductPriceMap();
 
-        for (int bucketKey = getCartMap(c).size(); bucketKey > 1; bucketKey--) {
+        for (int bucketKey = getCartMap(cart).size(); bucketKey > 1; bucketKey--) {
 
             int i = bucketKey;
             ArrayList<List<String>> finalDiscountBucket = new ArrayList<>();
-            HashMap<String, Integer> cart = getCartMap(c);
+            HashMap<String, Integer> newCart = getCartMap(cart);
 
             while (bucketKey > 1) {
-                finalDiscountBucket.add(putBooksIntoBucket(cart, bucketKey));
-                if (bucketKey > cart.size()) --bucketKey;
+                finalDiscountBucket.add(putBooksIntoBucket(newCart, bucketKey));
+                if (bucketKey > newCart.size()) --bucketKey;
             }
 
-            double price = calculatePriceAfterDiscount(finalDiscountBucket);
+            double price = calculatePriceAfterDiscount(finalDiscountBucket, productPriceMap);
 
-            double sum = cart.values().stream().map(integer -> integer * 50).mapToDouble(ii -> ii)
-                    .sum();
+            double residualPrice = newCart.entrySet().stream()
+                    .mapToDouble(value -> {
+                        double unitPrice = productPriceMap.get(value.getKey());
+                        return unitPrice * value.getValue();
+                    }).sum();
 
             bucketKey = i;
-            possiblePrices.add(price + sum);
+            possiblePrices.add(price + residualPrice);
 
-            log.info(String.format("Euro: %.2f €%n", price + sum));
+            log.info(String.format("Euro: %.2f €%n", price + residualPrice));
             log.info("Bucket = " + finalDiscountBucket);
-            log.info("Cart = " + cart);
+            log.info("Cart = " + newCart);
         }
 
         return possiblePrices.stream().min(Double::compareTo);
     }
 
-    private static List<String> putBooksIntoBucket(HashMap<String, Integer> cart, int bucketKey) {
+    /**
+     *
+     * @param cart
+     * @param bucketKey
+     * Function to put the books into a corresponding bucket to finalize the best bucket combination
+     * @return
+     */
+    private List<String> putBooksIntoBucket(HashMap<String, Integer> cart, int bucketKey) {
         Map<Integer, List<String>> bucket = createEmptyBucket();
         Iterator<Map.Entry<String, Integer>> cartIterator = cart.entrySet().iterator();
         List<String> selectedBucket = bucket.get(bucketKey);
@@ -98,23 +125,43 @@ public class DiscountServiceImpl implements DiscountService {
         return selectedBucket;
     }
 
-    private static void removeStaleItems(HashMap<String, Integer> cart) {
+    /**
+     * Remove the stale items in the cart when quantity becomes 0
+     * @param cart
+     */
+    private void removeStaleItems(HashMap<String, Integer> cart) {
         cart.entrySet().removeIf(bookItem -> bookItem.getValue() == 0);
     }
 
-    private static Map<Integer, List<String>> createEmptyBucket() {
+    private Map<Integer, List<String>> createEmptyBucket() {
         return IntStream.rangeClosed(1, 5).boxed()
                 .collect(Collectors.toMap(Function.identity(), ArrayList::new));
     }
 
-    private static double calculatePriceAfterDiscount(ArrayList<List<String>> finalDiscountBucket) {
+    private double calculatePriceAfterDiscount(ArrayList<List<String>> finalDiscountBucket, Map<String, Double> productPriceMap) {
         return finalDiscountBucket.stream().filter(bucket -> !bucket.isEmpty())
                 .map(eachBucket -> {
                     Integer discount = DiscountConstants.DISCOUNT.get(eachBucket.size());
-                    long totalPrice = eachBucket.size() * 50L;
+                    double totalPrice = findTotalPriceOfBucket(eachBucket, productPriceMap);
                     return totalPrice - (totalPrice * ((double) discount / 100));
                 })
                 .mapToDouble(i -> i)
                 .sum();
     }
+
+    private double findTotalPriceOfBucket(List<String> bucket, Map<String, Double> productPriceMap) {
+        return bucket.stream()
+                .mapToDouble(productPriceMap::get)
+                .sum();
+    }
+
+    private Map<String, Double> getProductPriceMap() {
+        return productRepository.findAll().stream()
+                .collect(Collectors.toMap(
+                        Product::getProductId,
+                        Product::getListPrice
+                ));
+
+    }
+
 }
