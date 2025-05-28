@@ -5,7 +5,7 @@ spring:
 bookstore:
   mongo:
     username: admin
-    password: o3NBPc0vzav1LYSr
+    password:
     host: cluster1.ywkinwj.mongodb.net
     database: bookstore
     options: ?retryWrites=true&w=majority&appName=Cluster1
